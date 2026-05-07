@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>OpenClaw Agent Terminal Log</title>
+<style>
+ body{background:#0c0c0c;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;font-family:'Courier New', monospace;}
+ .terminal{width:850px;background:#121212;border-radius:10px;box-shadow:0 0 30px rgba(0,255,0,0.15);overflow:hidden;}
+ .terminal-header{background:#1e1e1e;padding:8px 16px;display:flex;align-items:center;gap:8px;}
+ .dot{width:12px;height:12px;border-radius:50%;}
+ .dot.red{background:#ff5f56;}
+ .dot.yellow{background:#ffbd2e;}
+ .dot.green{background:#27c93f;}
+ .title{color:#aaa;font-size:13px;margin-left:12px;}
+ .terminal-body{padding:20px;color:#fff;font-size:14px;line-height:1.7;white-space:pre-wrap;word-break:break-all;max-height:600px;overflow-y:auto;}
+ .log{color:#0f0;}
+ .info{color:#4fc3f7;}
+ .warn{color:#ffb74d;}
+ .highlight{color:#ffd54f;}
+ .tag{color:#888;}
+ .success{color:#69f0ae;}
+ .prompt{color:#fff;}
+</style>
+</head>
+<body>
+<div class="terminal">
+ <div class="terminal-header">
+ <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+ <span class="title">openclaw@data-platform: ~/slow-query-governor-agent</span>
+ </div>
+ <div class="terminal-body">
+<span class="prompt">┌─────────────────────────────────────────────────────────────┐
+│ OpenClaw Slow-Query Governor Agent v1.2.0 │
+│ Session: 2026-05-07T02:15:03Z │
+└─────────────────────────────────────────────────────────────┘</span>
+
+<span class="log">[02:15:03]</span> <span class="info">SLOW_QUERY_SCANNER</span> | 连接只读副本 rds-replica-01.prod... <span class="success">✓ 成功</span>
+<span class="log">[02:15:04]</span> <span class="info">SLOW_QUERY_SCANNER</span> | 拉取 1h 慢查询日志... 发现<span class="highlight">347</span>条
+<span class="log">[02:15:04]</span> <span class="info">SQL_PATTERN_MERGE</span> | 去重合并为 <span class="highlight">12</span> 条模板SQL
+<span class="log">[02:15:04]</span> <span class="info">TOP_SLOW_SQL</span> | 选中模板ID: <span class="highlight">tpl_0847</span> (2,847次/h, 平均4.2s)
+<span class="log">[02:15:05]</span> <span class="info">EXPLAIN_ANALYZER</span> | 执行 EXPLAIN ANALYZE...
+<span class="log">[02:15:05]</span> <span class="prompt">┌─────────────────────────────────────────────────┐</span>
+<span class="log">[02:15:05]</span> <span class="prompt">│</span> <span class="warn">type: ALL | rows: 2,830,000 | Extra: Using filesort</span> <span class="prompt">│</span>
+<span class="log">[02:15:05]</span> <span class="prompt">│</span> <span class="warn">问题: 全表扫描 + 文件排序</span> <span class="prompt">│</span>
+<span class="log">[02:15:05]</span> <span class="prompt">└─────────────────────────────────────────────────┘</span>
+<span class="log">[02:15:07]</span> <span class="info">INDEX_CANDIDATE_GEN</span> | 生成<span class="highlight">3</span>套优化方案...
+<span class="log">[02:15:07]</span> ├─ 方案A: idx_user_status_time (user_id,status,created_at)
+<span class="log">[02:15:07]</span> ├─ 方案B: idx_status_time (status,created_at)
+<span class="log">[02:15:07]</span> └─ 方案C: 拆分查询 + 缓存
+<span class="log">[02:15:08]</span> <span class="info">SANDBOX_VALIDATOR</span> | 沙箱构建中... (ID: <span class="highlight">sanbox-db8a</span>)
+<span class="log">[02:15:53]</span> <span class="info">SANDBOX_VALIDATOR</span> | 回放<span class="highlight">10,000</span>条生产流量... <span class="success">完成</span>
+<span class="log">[02:15:53]</span> <span class="prompt">┌───────────────────────────────────────────────┐</span>
+<span class="log">[02:15:53]</span> <span class="prompt">│</span> <span class="success">方案A 平均耗时: 0.08s 性能提升: 5250% ✓推荐</span> <span class="prompt">│</span>
+<span class="log">[02:15:53]</span> <span class="prompt">│</span> 方案B 平均耗时: 0.41s 性能提升: 924% <span class="prompt">│</span>
+<span class="log">[02:15:53]</span> <span class="prompt">│</span> 方案C 平均耗时: 0.12s 性能提升: 3400% <span class="prompt">│</span>
+<span class="log">[02:15:53]</span> <span class="prompt">└───────────────────────────────────────────────┘</span>
+<span class="log">[02:15:55]</span> <span class="info">PR_GENERATOR</span> | 生成 PR <span class="highlight">#2843</span>
+<span class="log">[02:15:56]</span> <span class="info">PR_GENERATOR</span> | 标题: "fix(db): 优化慢查询，添加复合索引"
+<span class="log">[02:15:56]</span> <span class="info">PR_GENERATOR</span> | 已提交至代码仓库，@DBA 审核
+<span class="log">[02:15:56]</span> <span class="success">TASK_COMPLETE</span> | 本次闭环耗时 <span class="highlight">53 秒</span>
+<span class="log">[02:15:57]</span> <span class="info">SYSTEM_STATUS</span> | 队列剩余: 11 | 今日PR: 17 | DB CPU: <span class="success">47%</span>
+<span class="tag">─────────────────────────────────────────────────────────────</span>
+<span class="prompt">openclaw@data-platform:~$</span> <span class="log">█</span>
+ </div>
